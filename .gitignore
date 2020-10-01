@@ -26,6 +26,9 @@ dist/
 # JetBrains IDE
 .idea/
 
+# Added files and folders to ignore
+pickles
+
 # Unit test reports
 TEST*.xml
 

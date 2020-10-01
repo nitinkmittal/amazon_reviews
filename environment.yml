@@ -1,0 +1,20 @@
+name: amazon_reviews
+channels:
+  - conda-forge
+dependencies:
+  - ipykernel
+  - openpyxl
+  - numpy
+  - pandas
+  - pip
+  - python
+  - requests
+  - Pillow
+  - selenium
+  - typing
+  - pip:
+      - func_timeout
+      - glob3
+      - pickle-mixin
+      - beautifulsoup4
+      - lxml
