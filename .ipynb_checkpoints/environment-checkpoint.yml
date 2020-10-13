@@ -4,6 +4,7 @@ channels:
 dependencies:
   - ipykernel
   - openpyxl
+  - nodejs
   - numpy
   - pandas
   - pip
@@ -12,6 +13,7 @@ dependencies:
   - Pillow
   - selenium
   - typing
+  - tqdm
   - pip:
       - func_timeout
       - glob3

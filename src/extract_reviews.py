@@ -33,7 +33,8 @@ def extract_profile_id(profile_link : str):
 
 
 def extract_page_reviews(
-    page_source_soup : BeautifulSoup):
+    page_source_soup : BeautifulSoup,
+    verbose : int = 0):
     """
     Extract reviews from the Amazon review page.
     
@@ -46,7 +47,7 @@ def extract_page_reviews(
     review : Dict.
     """
     reviews = page_source_soup.find_all(name="div", attrs={"data-hook":"review"})
-    contents = {}
+    contents = []
     for i, review in enumerate(reviews):
         try:
             content = {}
@@ -58,6 +59,7 @@ def extract_page_reviews(
             body = review.find(name="span", attrs={"data-hook":"review-body"})
             helpful_count = review.find(name="span", attrs={"data-hook":"helpful-vote-statement"})
             images = review.find(name="div", attrs={"class":"review-image-tile-section"})
+            content["reviewer_id"] = extract_profile_id(profile) 
             content["name"] = name
             content["rating"] = rating
             content["title"] = title
@@ -65,7 +67,7 @@ def extract_page_reviews(
             content["helpful_count"] = helpful_count
             content["body"] = body
             content["images"] = images
-            contents[extract_profile_id(profile)] = content
+            contents.append(content)
         except Exception as e:
             print(f"Failed review extraction from page source, exception : {e}")
     return contents
@@ -103,18 +105,19 @@ def extract_all_reviews(driver : WebDriver,
     success_page_nos = []
     failed_page_nos = []
     reviews = {}
+    total_num_pages = start_page_no + max_num_pages
     
     if not is_review_page_url(url):
         return
     
-    for page_no in range(start_page_no, max_num_pages+1):
+    for page_no in range(start_page_no, total_num_pages):
         if verbose >= 1: print(f"Extracting reviews from page : {page_no}")
         page_url = update_review_url_for_page_no(url, page_no)
         
         # loading review page
         try:
             load_url(driver=driver, url=page_url, verbose=verbose)
-            sleep(randint(5,10))
+            sleep(randint(10,15))
         except Exception as e:
             failed_page_nos.append(page_no)
             print(f"Failed loading page, exception : {e}")
@@ -126,8 +129,8 @@ def extract_all_reviews(driver : WebDriver,
             reviews[page_no] = extract_page_reviews(page_source)
         except Exception as e:
             failed_page_nos.append(page_no)
-            print(f"Failed extfracting reviews, exception : {e}")
+            print(f"Failed extracting reviews, exception : {e}")
             continue # skip this page
-    return reviews   a
-a
+    
+    return reviews, success_page_nos, failed_page_nos
 

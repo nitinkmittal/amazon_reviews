@@ -9,6 +9,8 @@ def dump_pickle(obj, filename : str):
     
 def load_pickle(filename : str):
     """Load Python pickle.""" 
+    if ".pickle" in filename:
+        filename = filename.replace(".pickle","")
     return load(open(f"{filename}.pickle", "rb"))
 
 def create_dir(folder_name : str):
